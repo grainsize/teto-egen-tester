@@ -1,4 +1,4 @@
-# 비대화형 환경에서 실행 가능하도록 미리 정의된 응답으로 동작하는 버전
+import streamlit as st
 
 # 질문 목록
 teto_questions = [
@@ -25,14 +25,6 @@ egen_questions = [
 options = ["매우 그렇다", "그렇다", "아니다", "전혀 아니다"]
 score_map = {"매우 그렇다": 3, "그렇다": 2, "아니다": 1, "전혀 아니다": 0}
 
-# 테스트용 응답 시나리오: 모든 질문에 '그렇다' (2점)로 응답
-def get_predefined_answers():
-    return {
-        "gender": "남성",
-        "teto_answers": ["그렇다"] * len(teto_questions),
-        "egen_answers": ["그렇다"] * len(egen_questions)
-    }
-
 def calculate_result(gender, teto_score, egen_score):
     teto_percent = (teto_score / 16) * 100
     egen_percent = (egen_score / 14) * 100
@@ -50,23 +42,30 @@ def calculate_result(gender, teto_score, egen_score):
 
     return "혼합형", teto_percent, egen_percent
 
-def main():
-    print("==== 테토남/에겐남 성향 테스트 (자동 모드) ====")
-    data = get_predefined_answers()
-    gender = data["gender"]
-    teto_answers = data["teto_answers"]
-    egen_answers = data["egen_answers"]
+# Streamlit 앱 시작
+st.title("🧠 테토남/에겐남 성향 테스트")
 
-    teto_score = sum(score_map[a] for a in teto_answers)
-    egen_score = sum(score_map[a] for a in egen_answers)
+gender = st.radio("당신의 성별은?", ["남성", "여성"])
 
+st.subheader("🔷 테스토스테론 성향 질문")
+teto_score = 0
+for i, q in enumerate(teto_questions):
+    answer = st.radio(q, options, key=f"teto_{i}")
+    teto_score += score_map[answer]
+
+st.subheader("🔶 에스트로겐 성향 질문")
+egen_score = 0
+for i, q in enumerate(egen_questions):
+    answer = st.radio(q, options, key=f"egen_{i}")
+    egen_score += score_map[answer]
+
+if st.button("결과 보기"):
     result_type, teto_percent, egen_percent = calculate_result(gender, teto_score, egen_score)
 
-    print("\n==== 결과 ====")
-    print(f"성별: {gender}")
-    print(f"테토 성향 점수: {teto_score} / 16 → {teto_percent:.1f}%")
-    print(f"에겐 성향 점수: {egen_score} / 14 → {egen_percent:.1f}%")
-    print(f"→ 당신은 '{result_type}'입니다.")
+    st.markdown("---")
+    st.header(f"✅ 당신은 '{result_type}'입니다.")
+    st.write(f"테토 성향 점수: {teto_score} / 16 → {teto_percent:.1f}%")
+    st.write(f"에겐 성향 점수: {egen_score} / 14 → {egen_percent:.1f}%")
 
     descriptions = {
         "테토남": "논리적이고 목표 지향적인 남성 성향. 경쟁, 이성, 구조를 중시합니다.",
@@ -76,7 +75,4 @@ def main():
         "혼합형": "이성과 감성의 균형을 잘 맞추는 성향입니다. 상황에 따라 유연하게 반응합니다."
     }
 
-    print("\n" + descriptions[result_type])
-
-if __name__ == "__main__":
-    main()
+    st.success(descriptions[result_type])
