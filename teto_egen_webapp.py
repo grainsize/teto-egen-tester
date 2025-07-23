@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-import plotly.graph_objects as go
 
 # 질문 목록 (카테고리는 계산에만 사용되고 사용자에게는 보이지 않음)
 questions = [
