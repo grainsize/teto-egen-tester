@@ -1,6 +1,6 @@
 import streamlit as st
 import random
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 # 질문 목록 (카테고리는 계산에만 사용되고 사용자에게는 보이지 않음)
 questions = [
@@ -74,15 +74,13 @@ if st.button("결과 보기"):
     st.write(f"테토 성향 비율: {teto_percent:.1f}%")
     st.write(f"에겐 성향 비율: {egen_percent:.1f}%")
 
-    # 원형 그래프 그리기
-    labels = ['테토', '에겐']
-    sizes = [teto_percent, egen_percent]
-    colors = ['#4B8BBE', '#FFB6C1']
-
-    fig, ax = plt.subplots()
-    ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
-    ax.axis('equal')  # 원형 유지
-    st.pyplot(fig)
+    # 원형 그래프 그리기 (Plotly)
+    fig = go.Figure(data=[
+        go.Pie(labels=['테토', '에겐'], values=[teto_percent, egen_percent],
+               marker=dict(colors=['#4B8BBE', '#FFB6C1']),
+               hoverinfo='label+percent', textinfo='label+percent')
+    ])
+    st.plotly_chart(fig)
 
     descriptions = {
         "테토남": "논리적이고 목표 지향적인 남성 성향. 경쟁, 이성, 구조를 중시합니다.",
