@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import matplotlib.pyplot as plt
 
 # 질문 목록 (카테고리는 계산에만 사용되고 사용자에게는 보이지 않음)
 questions = [
@@ -49,7 +50,7 @@ def calculate_result(gender, teto_score, egen_score):
         return "혼합형", teto_percent, egen_percent
 
 # Streamlit 앱 시작
-st.title("🧠 테토남/에겐남 성향 테스트")
+st.title("🧠 테토/에겐 성향 테스트")
 
 gender = st.radio("당신의 성별은?", ["남성", "여성"])
 
@@ -72,6 +73,16 @@ if st.button("결과 보기"):
     st.header(f"✅ 당신은 '{result_type}'입니다.")
     st.write(f"테토 성향 비율: {teto_percent:.1f}%")
     st.write(f"에겐 성향 비율: {egen_percent:.1f}%")
+
+    # 원형 그래프 그리기
+    labels = ['테토', '에겐']
+    sizes = [teto_percent, egen_percent]
+    colors = ['#4B8BBE', '#FFB6C1']
+
+    fig, ax = plt.subplots()
+    ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+    ax.axis('equal')  # 원형 유지
+    st.pyplot(fig)
 
     descriptions = {
         "테토남": "논리적이고 목표 지향적인 남성 성향. 경쟁, 이성, 구조를 중시합니다.",
