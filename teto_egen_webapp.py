@@ -73,14 +73,6 @@ if st.button("결과 보기"):
     st.write(f"테토 성향 비율: {teto_percent:.1f}%")
     st.write(f"에겐 성향 비율: {egen_percent:.1f}%")
 
-    # 원형 그래프 그리기 (Plotly)
-    fig = go.Figure(data=[
-        go.Pie(labels=['테토', '에겐'], values=[teto_percent, egen_percent],
-               marker=dict(colors=['#4B8BBE', '#FFB6C1']),
-               hoverinfo='label+percent', textinfo='label+percent')
-    ])
-    st.plotly_chart(fig)
-
     descriptions = {
         "테토남": "논리적이고 목표 지향적인 남성 성향. 경쟁, 이성, 구조를 중시합니다.",
         "에겐남": "감성적이고 공감력이 뛰어난 남성 성향. 관계와 감정 표현에 능합니다.",
